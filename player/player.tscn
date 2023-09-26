@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://d045o1jm5u8ap"]
+
+[ext_resource type="Script" path="res://player/pan.gd" id="1_n2faq"]
+[ext_resource type="Script" path="res://player/zoom.gd" id="2_rxoem"]
+
+[node name="Player" type="Camera2D"]
+limit_left = 0
+limit_top = 0
+
+[node name="Pan" type="Node" parent="." node_paths=PackedStringArray("camera")]
+script = ExtResource("1_n2faq")
+camera = NodePath("..")
+
+[node name="Zoom" type="Node" parent="." node_paths=PackedStringArray("camera")]
+script = ExtResource("2_rxoem")
+camera = NodePath("..")
