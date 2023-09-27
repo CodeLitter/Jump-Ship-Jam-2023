@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://dmdyp7cajrnu2"]
+
+[ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="2_k7we3"]
+[ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="2_vx4tt"]
+
+[sub_resource type="Gradient" id="Gradient_lm1k2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_24bod"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a6mi6"]
+width = 500
+height = 500
+color_ramp = SubResource("Gradient_lm1k2")
+noise = SubResource("FastNoiseLite_24bod")
+
+[node name="player_select_test_scene" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(2500, 2500)
+scale = Vector2(10, 10)
+texture = SubResource("NoiseTexture2D_a6mi6")
+
+[node name="Player" parent="." instance=ExtResource("2_vx4tt")]
+
+[node name="Unit" parent="." instance=ExtResource("2_k7we3")]
+position = Vector2(255, 364)
+
+[node name="Unit2" parent="." instance=ExtResource("2_k7we3")]
+position = Vector2(1099, 501)
+
+[node name="Unit3" parent="." instance=ExtResource("2_k7we3")]
+position = Vector2(596, 788)
+
+[node name="Unit4" parent="." instance=ExtResource("2_k7we3")]
+position = Vector2(1297, 990)
+
+[node name="Unit5" parent="." instance=ExtResource("2_k7we3")]
+position = Vector2(1813, 375)
+
+[node name="Unit6" parent="." instance=ExtResource("2_k7we3")]
+position = Vector2(780, 1632)
