@@ -62,7 +62,7 @@ func _draw():
 
 
 func _on_body_entered(body: Node2D):
-	if is_selecting:
+	if is_selecting and body.owner.is_in_group("selectable"):
 		selection.push_back(body.owner)
 #		print(body.owner.name, " Entered")
 	pass
