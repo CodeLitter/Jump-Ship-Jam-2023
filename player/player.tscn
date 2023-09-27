@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://d045o1jm5u8ap"]
+[gd_scene load_steps=5 format=3 uid="uid://d045o1jm5u8ap"]
 
 [ext_resource type="Script" path="res://player/pan.gd" id="1_n2faq"]
 [ext_resource type="Script" path="res://player/zoom.gd" id="2_rxoem"]
 [ext_resource type="Script" path="res://player/select.gd" id="3_3vjeb"]
+[ext_resource type="Script" path="res://player/select_drawer.gd" id="4_50er7"]
 
 [node name="Player" type="Camera2D"]
 limit_left = 0
@@ -25,12 +26,16 @@ steps = 20
 [node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("3_3vjeb")
 camera = NodePath("..")
-selection_box_color = Color(0, 0, 1, 1)
-selection_box_thickness = 5.0
-selection_color = Color(0, 0, 1, 1)
-selection_thickness = 5.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Select"]
+
+[node name="SelectDrawer" type="Node2D" parent="." node_paths=PackedStringArray("select")]
+script = ExtResource("4_50er7")
+select = NodePath("../Select")
+selection_box_color = Color(0, 0, 1, 1)
+selection_box_thickness = 5.0
+selection_color = Color(0, 1, 1, 1)
+selection_thickness = 5.0
 
 [connection signal="body_entered" from="Select" to="Select" method="_on_body_entered"]
 [connection signal="body_exited" from="Select" to="Select" method="_on_body_exited"]

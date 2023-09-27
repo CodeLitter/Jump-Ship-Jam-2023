@@ -1,12 +1,7 @@
 extends Area2D
+class_name Select
 
 @export var camera: Camera2D
-@export var selection_box_color: Color = Color.WHITE
-@export var selection_box_fill: bool = false
-@export var selection_box_thickness: float = 1
-@export var selection_color: Color = Color.WHITE
-@export var selection_fill: bool = false
-@export var selection_thickness: float = 1
 @onready var collision: CollisionShape2D = $"CollisionShape2D"
 @onready var shape: RectangleShape2D = RectangleShape2D.new()
 var selection_start: Vector2:
@@ -43,22 +38,6 @@ func _input(event):
 func _process(delta):
 	if is_selecting:
 		selection_end = camera.get_global_mouse_position()
-	queue_redraw()
-
-
-func _draw():
-	if is_selecting:
-		var rect := Rect2()
-		rect.position = to_local(selection_start)
-		rect.end = to_local(selection_end)
-		draw_rect(rect, selection_box_color, selection_box_fill, selection_box_thickness / camera.zoom.length());
-	for item in selection:
-		var unit: Sprite2D = item
-		var bounds := Rect2(
-			to_local(unit.global_position) - (unit.get_rect().size + Vector2.ONE * selection_thickness) / 2.0,
-			unit.get_rect().size + Vector2.ONE * selection_box_thickness
-		)
-		draw_rect(bounds, selection_color, selection_fill, selection_thickness / camera.zoom.length())
 
 
 func _on_body_entered(body: Node2D):
