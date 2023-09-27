@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dx5t2cyuss5jo"]
+
+[ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="1_d7ay8"]
+
+[sub_resource type="Gradient" id="Gradient_lm1k2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_24bod"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rayn5"]
+width = 500
+height = 500
+color_ramp = SubResource("Gradient_lm1k2")
+noise = SubResource("FastNoiseLite_24bod")
+
+[node name="player_movement_test_scene" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(2500, 2500)
+scale = Vector2(10, 10)
+texture = SubResource("NoiseTexture2D_rayn5")
+
+[node name="Player" parent="." instance=ExtResource("1_d7ay8")]
