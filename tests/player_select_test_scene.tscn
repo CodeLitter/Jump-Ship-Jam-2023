@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dmdyp7cajrnu2"]
+[gd_scene load_steps=8 format=3 uid="uid://dmdyp7cajrnu2"]
 
 [ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="2_k7we3"]
 [ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="2_vx4tt"]
+[ext_resource type="PackedScene" uid="uid://cka4jn0u8yksc" path="res://ui/highlight_unit_ui.tscn" id="3_f0eii"]
+[ext_resource type="PackedScene" uid="uid://nrl52svkam0q" path="res://ui/selection_box_ui.tscn" id="4_ktps4"]
 
 [sub_resource type="Gradient" id="Gradient_lm1k2"]
 
@@ -23,20 +25,28 @@ texture = SubResource("NoiseTexture2D_a6mi6")
 
 [node name="Player" parent="." instance=ExtResource("2_vx4tt")]
 
-[node name="Unit" parent="." instance=ExtResource("2_k7we3")]
+[node name="Units" type="Node" parent="."]
+
+[node name="Unit" parent="Units" instance=ExtResource("2_k7we3")]
 position = Vector2(255, 364)
 
-[node name="Unit2" parent="." instance=ExtResource("2_k7we3")]
+[node name="Unit2" parent="Units" instance=ExtResource("2_k7we3")]
 position = Vector2(1099, 501)
 
-[node name="Unit3" parent="." instance=ExtResource("2_k7we3")]
+[node name="Unit3" parent="Units" instance=ExtResource("2_k7we3")]
 position = Vector2(596, 788)
 
-[node name="Unit4" parent="." instance=ExtResource("2_k7we3")]
+[node name="Unit4" parent="Units" instance=ExtResource("2_k7we3")]
 position = Vector2(1297, 990)
 
-[node name="Unit5" parent="." instance=ExtResource("2_k7we3")]
+[node name="Unit5" parent="Units" instance=ExtResource("2_k7we3")]
 position = Vector2(1813, 375)
 
-[node name="Unit6" parent="." instance=ExtResource("2_k7we3")]
+[node name="Unit6" parent="Units" instance=ExtResource("2_k7we3")]
 position = Vector2(780, 1632)
+
+[node name="Highlight Unit UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_f0eii")]
+player = NodePath("../Player")
+
+[node name="Selection Box UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_ktps4")]
+player = NodePath("../Player")

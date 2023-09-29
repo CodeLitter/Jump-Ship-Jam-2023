@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bwenhjjj8wpbh"]
+
+[node name="Hightlight Box" type="Panel"]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0

@@ -1,54 +1,58 @@
 extends Area2D
 class_name Select
 
+
 @export var camera: Camera2D
 @onready var collision: CollisionShape2D = $"CollisionShape2D"
-@onready var shape: RectangleShape2D = RectangleShape2D.new()
-var selection_start: Vector2:
+var shape: RectangleShape2D
+var drag_start_position: Vector2:
 	set(value):
-		selection_start = value
-		selection_end = value
+		drag_start_position = value
+		drag_end_position = value
 		collision.global_position = value
-		shape.size = Vector2.ZERO
-var selection_end: Vector2:
+		collision.shape.size = Vector2.ZERO
+var drag_end_position: Vector2:
 	set(value):
-		selection_end = value
-		collision.global_position = lerp(selection_start, selection_end, 0.5)
-		shape.size = abs(selection_end - selection_start)
-var is_selecting: bool
-var selection: Array
-
-
-func _ready():
-	collision.shape = shape
+		drag_end_position = value
+		collision.global_position = lerp(drag_start_position, drag_end_position, 0.5)
+		collision.shape.size = abs(drag_end_position - drag_start_position)
+var dragging: bool
+#var selection: Array
+signal drag_start
+signal drag_end
+signal unit_add(unit: Node2D)
+signal unit_remove(unit: Node2D)
 
 
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.is_pressed():
-				is_selecting = true
-				selection_start = camera.get_global_mouse_position()
-				selection.clear()
+				collision.shape = RectangleShape2D.new()
+				dragging = true
+				drag_start_position = camera.get_global_mouse_position()
+				drag_start.emit()
+#				selection.clear()
 			if event.is_released():
-				is_selecting = false
-#				print(selection)
+				collision.shape = null
+				dragging = false
+				drag_end.emit()
 
 
 func _process(delta):
-	if is_selecting:
-		selection_end = camera.get_global_mouse_position()
+	if dragging:
+		drag_end_position = camera.get_global_mouse_position()
 
 
 func _on_body_entered(body: Node2D):
-	if is_selecting and body.owner.is_in_group("selectable"):
-		selection.push_back(body.owner)
-#		print(body.owner.name, " Entered")
+	if dragging and body.owner.is_in_group("selectable"):
+		unit_add.emit(body.owner);
+#		print(body.owner.name, " Entered ")
 	pass
 
 
 func _on_body_exited(body: Node2D):
-	if is_selecting:
-		selection.erase(body.owner)
-#		print(body.owner.name, " Exited")
+	if dragging:
+		unit_remove.emit(body.owner)
+#		print(body.owner.name, " Exited ")
 	pass
