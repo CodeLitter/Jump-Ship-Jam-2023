@@ -18,10 +18,10 @@ func _process(delta):
 	for child in get_children(true):
 		child.visible = false
 	for i in len(command.units):
-		var unit := command.units[i] as Sprite2D
+		var unit: CollisionShape2D = command.units[i].get_node(\"CollisionShape2D\")
 		var box = get_child(i, true)
-		box.position = unit.global_position - (unit.get_rect().size + highlight_box.size) / 2.0
-		box.size = unit.get_rect().size + highlight_box.size
+		box.position = unit.global_position - (unit.shape.size + highlight_box.size) / 2.0
+		box.size = unit.shape.size + highlight_box.size
 		box.visible = true
 		box.queue_redraw()
 "

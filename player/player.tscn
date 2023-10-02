@@ -23,8 +23,9 @@ min = 0.5
 max = 5.0
 steps = 20
 
-[node name="Command" type="Node" parent="."]
+[node name="Command" type="Node" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("3_igh1q")
+camera = NodePath("..")
 
 [node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("3_3vjeb")

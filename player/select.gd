@@ -45,8 +45,8 @@ func _process(delta):
 
 
 func _on_body_entered(body: Node2D):
-	if dragging and body.owner.is_in_group("selectable"):
-		unit_add.emit(body.owner);
+	if dragging and body.is_in_group("selectable"):
+		unit_add.emit(body);
 #		print(body.owner.name, " Entered ")
 	pass
 

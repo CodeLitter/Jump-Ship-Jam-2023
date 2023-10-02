@@ -1,8 +1,18 @@
 extends Node
 class_name Command
 
-
+@export var camera: Camera2D
 var units: Array
+
+
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			# TODO create command with each unit in selection
+			for unit in units:
+				unit.agent.target_position = camera.get_global_mouse_position()
+				print(unit.agent.target_position)
+			pass
 
 
 func _process(delta):

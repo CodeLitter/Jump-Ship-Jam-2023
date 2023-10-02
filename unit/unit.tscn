@@ -1,12 +1,52 @@
-[gd_scene load_steps=3 format=3 uid="uid://caw2hy8hmf0ha"]
+[gd_scene load_steps=4 format=3 uid="uid://caw2hy8hmf0ha"]
 
 [ext_resource type="Texture2D" uid="uid://d0wpn2fa42p7a" path="res://icon.svg" id="1_6tbm2"]
+
+[sub_resource type="GDScript" id="GDScript_nbd7x"]
+resource_name = "unit"
+script/source = "extends CharacterBody2D
+
+@export var speed: float = 10
+@onready var agent: NavigationAgent2D = $\"NavigationAgent2D\"
+var movement_delta: float
+
+func _physics_process(delta):
+	if agent.is_navigation_finished():
+		return true
+	
+	var next_path_position := agent.get_next_path_position()
+	var new_velocity := (next_path_position - global_position).normalized()
+	new_velocity *= speed * delta
+	
+	if agent.avoidance_enabled:
+		agent.velocity = new_velocity
+	else:
+		_on_navigation_agent_2d_velocity_computed(new_velocity)
+	pass
+
+
+func _on_navigation_agent_2d_velocity_computed(safe_velocity):
+	velocity = safe_velocity
+	move_and_slide()
+"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lmvdm"]
 size = Vector2(128, 128)
 
-[node name="Unit" type="Sprite2D" groups=["selectable"]]
+[node name="Unit" type="CharacterBody2D" groups=["selectable"]]
+motion_mode = 1
+script = SubResource("GDScript_nbd7x")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_6tbm2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lmvdm")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+radius = 64.0
+debug_enabled = true
 
 [node name="Health" type="Node" parent="."]
 
@@ -16,9 +56,4 @@ texture = ExtResource("1_6tbm2")
 
 [node name="Attacker" type="Node" parent="."]
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
-freeze = true
-freeze_mode = 1
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
-shape = SubResource("RectangleShape2D_lmvdm")
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
