@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://caw2hy8hmf0ha"]
+[gd_scene load_steps=6 format=3 uid="uid://caw2hy8hmf0ha"]
 
 [ext_resource type="Texture2D" uid="uid://d0wpn2fa42p7a" path="res://icon.svg" id="1_6tbm2"]
 
@@ -6,13 +6,33 @@
 resource_name = "unit"
 script/source = "extends CharacterBody2D
 
+
+@export var health: int = 100
 @export var speed: float = 10
 @onready var agent: NavigationAgent2D = $\"NavigationAgent2D\"
+@onready var collision: CollisionShape2D = $\"CollisionShape2D\"
 var movement_delta: float
+signal target_command(target)
+signal death
+
+func interact_with_target(target):
+	target_command.emit(target)
+
+
+func move_to_position(position):
+	target_command.emit(null)
+	agent.target_position = position
+
+
+func _process(delta):
+	if health <= 0:
+		death.emit()
+		queue_free()
+
 
 func _physics_process(delta):
 	if agent.is_navigation_finished():
-		return true
+		return
 	
 	var next_path_position := agent.get_next_path_position()
 	var new_velocity := (next_path_position - global_position).normalized()
@@ -30,30 +50,92 @@ func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 	move_and_slide()
 "
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lmvdm"]
-size = Vector2(128, 128)
+[sub_resource type="CircleShape2D" id="CircleShape2D_decmx"]
+radius = 64.0
+
+[sub_resource type="GDScript" id="GDScript_ogvfa"]
+resource_name = "attack"
+script/source = "extends Area2D
+
+
+@export var agent: NavigationAgent2D
+@export var damage: int = 10
+@onready var timer: Timer = $\"/root/UnitTimer\"
+var target: Node2D
+var in_range: bool
+var attacking: bool
+
+
+func _ready():
+	timer.timeout.connect(Callable(_on_timeout))
+
+
+func _process(delta):
+	if target == null:
+		return
+	
+	if not attacking and not in_range:
+		agent.target_position = target.global_position
+	
+	if in_range:
+		agent.target_position = global_position
+		attacking = true
+	pass
+
+
+func _on_unit_target_command(target):
+	self.target = target
+	in_range = false
+	pass
+
+
+func _on_body_entered(body):
+	if body == target:
+		in_range = true
+	pass
+
+
+func _on_body_exited(body):
+	if body == target:
+		in_range = false
+	pass
+
+func _on_timeout():
+	if target != null:
+		if in_range:
+			target.health -= damage
+		if target.health <= 0:
+			target = null
+			agent.target_position = global_position
+	attacking = false
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wy7dn"]
+radius = 128.0
 
 [node name="Unit" type="CharacterBody2D" groups=["selectable"]]
 motion_mode = 1
 script = SubResource("GDScript_nbd7x")
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_decmx")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_6tbm2")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_lmvdm")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
 radius = 64.0
 debug_enabled = true
 
-[node name="Health" type="Node" parent="."]
+[node name="Attack" type="Area2D" parent="." node_paths=PackedStringArray("agent")]
+script = SubResource("GDScript_ogvfa")
+agent = NodePath("../NavigationAgent2D")
 
-[node name="Mover" type="Node" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attack"]
+shape = SubResource("CircleShape2D_wy7dn")
 
-[node name="Builder" type="Node" parent="."]
-
-[node name="Attacker" type="Node" parent="."]
-
+[connection signal="target_command" from="." to="Attack" method="_on_unit_target_command"]
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
+[connection signal="body_entered" from="Attack" to="Attack" method="_on_body_entered"]
+[connection signal="body_exited" from="Attack" to="Attack" method="_on_body_exited"]

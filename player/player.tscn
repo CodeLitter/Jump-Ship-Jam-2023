@@ -23,9 +23,11 @@ min = 0.5
 max = 5.0
 steps = 20
 
-[node name="Command" type="Node" parent="." node_paths=PackedStringArray("camera")]
+[node name="Command" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("3_igh1q")
 camera = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Command"]
 
 [node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("3_3vjeb")
@@ -33,6 +35,7 @@ camera = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Select"]
 
+[connection signal="body_entered" from="Command" to="Command" method="_on_body_entered"]
 [connection signal="body_entered" from="Select" to="Select" method="_on_body_entered"]
 [connection signal="body_exited" from="Select" to="Select" method="_on_body_exited"]
 [connection signal="drag_end" from="Select" to="Command" method="_on_select_drag_end"]

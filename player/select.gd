@@ -4,7 +4,6 @@ class_name Select
 
 @export var camera: Camera2D
 @onready var collision: CollisionShape2D = $"CollisionShape2D"
-var shape: RectangleShape2D
 var drag_start_position: Vector2:
 	set(value):
 		drag_start_position = value

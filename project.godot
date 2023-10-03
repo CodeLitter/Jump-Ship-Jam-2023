@@ -14,6 +14,10 @@ config/name="Jump-Ship-Jam-2023"
 config/features=PackedStringArray("4.1", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+UnitTimer="*res://unit_timer.gd"
+
 [display]
 
 window/size/viewport_width=1280
