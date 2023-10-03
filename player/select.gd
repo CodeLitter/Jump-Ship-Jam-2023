@@ -52,6 +52,6 @@ func _on_body_entered(body: Node2D):
 
 func _on_body_exited(body: Node2D):
 	if dragging:
-		unit_remove.emit(body.owner)
+		unit_remove.emit(body)
 #		print(body.owner.name, " Exited ")
 	pass
