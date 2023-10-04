@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://cy4btr0b54c4g"]
+
+[ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="1_mageu"]
+
+[sub_resource type="GDScript" id="GDScript_1t6yw"]
+resource_name = "spawner"
+script/source = "extends Node2D
+
+
+@export var spawning_delay: int = 3
+@export var target_unit: PackedScene
+@onready var game_timer: Timer = $\"/root/UnitTimer\"
+@onready var spawn_point: Node2D = $\"spawn_point\"
+var current_tick: int = 0
+
+
+func _ready():
+	game_timer.timeout.connect(Callable(_on_timeout))
+	pass 
+
+
+func _process(delta):
+	pass
+
+
+func _on_timeout():
+	current_tick += 1
+	if (current_tick > spawning_delay):
+		current_tick = 0
+		var spawned_unit := target_unit.instantiate() as Node2D
+		spawned_unit.global_position = spawn_point.global_position
+		get_tree().root.add_child(spawned_unit)
+	pass
+"
+
+[sub_resource type="Gradient" id="Gradient_jdedq"]
+offsets = PackedFloat32Array(0.334661, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 0, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_enp8r"]
+gradient = SubResource("Gradient_jdedq")
+width = 256
+height = 256
+fill_from = Vector2(1, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6soj0"]
+size = Vector2(256, 256)
+
+[node name="spawner" type="StaticBody2D"]
+script = SubResource("GDScript_1t6yw")
+target_unit = ExtResource("1_mageu")
+
+[node name="spawn_point" type="Node2D" parent="."]
+position = Vector2(0, -82)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_enp8r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6soj0")

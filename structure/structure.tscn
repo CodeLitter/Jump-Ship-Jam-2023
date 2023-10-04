@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwv1kvtm4akao"]
+
+[sub_resource type="GDScript" id="GDScript_x00tr"]
+resource_name = "structure"
+script/source = "extends Node2D
+
+
+@export var health: int = 100
+@export var target_building: PackedScene
+
+
+func _ready():
+	pass 
+
+
+func _process(delta):
+	if health <= 0: 
+		queue_free()
+		var current_building := target_building.instantiate() as Node2D
+		current_building.global_position = global_position
+		get_tree().root.add_child(current_building)
+	pass
+
+
+
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cvk8o"]
+size = Vector2(256, 256)
+
+[sub_resource type="Gradient" id="Gradient_sudnn"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_t6hpe"]
+gradient = SubResource("Gradient_sudnn")
+width = 256
+height = 256
+fill_to = Vector2(1, 1)
+
+[node name="structure" type="StaticBody2D"]
+script = SubResource("GDScript_x00tr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_cvk8o")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_t6hpe")
