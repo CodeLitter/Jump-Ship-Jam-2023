@@ -58,9 +58,9 @@ speed = 5000.0
 position = Vector2(780, 1632)
 speed = 5000.0
 
-[node name="Structure" type="Node" parent="."]
+[node name="Structures" type="Node" parent="."]
 
-[node name="structure" parent="Structure" instance=ExtResource("3_w03yw")]
+[node name="structure" parent="Structures" instance=ExtResource("3_w03yw")]
 position = Vector2(2385, 1431)
 target_building = ExtResource("4_6owne")
 

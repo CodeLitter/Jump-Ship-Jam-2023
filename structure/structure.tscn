@@ -5,9 +5,8 @@ resource_name = "structure"
 script/source = "extends Node2D
 
 
-@export var health :int = 100
-@export var target_building :PackedScene
-#var current_building :Node2D
+@export var health: int = 100
+@export var target_building: PackedScene
 
 
 func _ready():

@@ -7,15 +7,15 @@ resource_name = "spawner"
 script/source = "extends Node2D
 
 
-@export var spawning_delay :int = 3
-@export var target_unit :PackedScene
-@onready var timer: Timer = $\"/root/UnitTimer\"
+@export var spawning_delay: int = 3
+@export var target_unit: PackedScene
+@onready var game_timer: Timer = $\"/root/UnitTimer\"
 @onready var spawn_point: Node2D = $\"spawn_point\"
-var current_tick :int = 0
+var current_tick: int = 0
 
 
 func _ready():
-	timer.timeout.connect(Callable(_on_timeout))
+	game_timer.timeout.connect(Callable(_on_timeout))
 	pass 
 
 
