@@ -24,12 +24,14 @@ max = 5.0
 steps = 20
 
 [node name="Command" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
+collision_mask = 12
 script = ExtResource("3_igh1q")
 camera = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Command"]
 
 [node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
+collision_mask = 26
 script = ExtResource("3_3vjeb")
 camera = NodePath("..")
 

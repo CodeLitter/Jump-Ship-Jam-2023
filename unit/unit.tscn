@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://caw2hy8hmf0ha"]
+[gd_scene load_steps=7 format=3 uid="uid://caw2hy8hmf0ha"]
 
 [ext_resource type="Texture2D" uid="uid://d0wpn2fa42p7a" path="res://icon.svg" id="1_6tbm2"]
 
@@ -8,20 +8,35 @@ script/source = "extends CharacterBody2D
 
 
 @export var health: int = 100
-@export var speed: float = 10
+@export var speed: float = 10_000
+@export var move: Node
+@export var attack: Node
+@onready var game_timer: Timer = $\"/root/GameTimer\"
 @onready var agent: NavigationAgent2D = $\"NavigationAgent2D\"
 @onready var collision: CollisionShape2D = $\"CollisionShape2D\"
-var movement_delta: float
+@onready var state: Node
 signal target_command(target)
+signal move_command(position)
 signal death
 
-func interact_with_target(target):
-	target_command.emit(target)
+
+func act(target):
+	if state != null and state.has_method(\"teardown\"):
+		state.teardown()
+	match typeof(target):
+		TYPE_VECTOR2:
+			state = move
+		TYPE_OBJECT:
+			state = attack
+		_:
+			state = null
+	if state != null and state.has_method(\"setup\"):
+		state.setup(target)
+	pass
 
 
-func move_to_position(position):
-	target_command.emit(null)
-	agent.target_position = position
+func _ready():
+	game_timer.timeout.connect(_on_timeout)
 
 
 func _process(delta):
@@ -30,24 +45,30 @@ func _process(delta):
 		queue_free()
 
 
-func _physics_process(delta):
+func _physics_process(delta: float):
 	if agent.is_navigation_finished():
 		return
 	
-	var next_path_position := agent.get_next_path_position()
-	var new_velocity := (next_path_position - global_position).normalized()
-	new_velocity *= speed * delta
+	var next_velocity := to_local(agent.get_next_path_position()).normalized() * speed * delta
 	
 	if agent.avoidance_enabled:
-		agent.velocity = new_velocity
+		agent.velocity = next_velocity
 	else:
-		_on_navigation_agent_2d_velocity_computed(new_velocity)
+		_on_navigation_agent_2d_velocity_computed(next_velocity)
 	pass
 
 
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 	velocity = safe_velocity
 	move_and_slide()
+
+
+func _on_timeout():
+	if state == null or not state.has_method(\"act\"):
+		return
+	if not state.act():
+		act(null)
+	pass
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_decmx"]
@@ -60,62 +81,100 @@ script/source = "extends Area2D
 
 @export var agent: NavigationAgent2D
 @export var damage: int = 10
-@onready var timer: Timer = $\"/root/UnitTimer\"
+@export var attacking_delay: int = 1
+var neighbors: Dictionary
 var target: Node2D
-var in_range: bool
-var attacking: bool
+var current_tick: int
 
 
-func _ready():
-	timer.timeout.connect(Callable(_on_timeout))
+func setup(target):
+	if target != null and target.has_signal(\"death\"):
+		target.connect(\"death\", _on_target_death)
+	self.target = target
+	current_tick = 0	
+	pass
+
+
+func teardown():
+	if self.target != null and self.target.has_signal(\"death\"):
+		self.target.disconnect(\"death\", _on_target_death)
+	pass
+
+
+func act() -> bool:
+	if target == null:
+		return false
+	current_tick += 1
+	if neighbors.has(target):
+		if current_tick >= attacking_delay:
+			target.health -= damage
+		agent.target_position = global_position
+	else:
+		agent.target_position = target.global_position
+	if current_tick >= attacking_delay:
+		current_tick = 0
+	return true
 
 
 func _process(delta):
-	if target == null:
-		return
-	
-	if not attacking and not in_range:
-		agent.target_position = target.global_position
-	
-	if in_range:
-		agent.target_position = global_position
-		attacking = true
 	pass
 
 
 func _on_unit_target_command(target):
+	if self.target != null and self.target.has_signal(\"death\"):
+		self.target.disconnect(\"death\", _on_target_death)
+	if target != null and target.has_signal(\"death\"):
+		target.connect(\"death\", _on_target_death)
 	self.target = target
-	in_range = false
+	current_tick = 0
 	pass
 
 
 func _on_body_entered(body):
-	if body == target:
-		in_range = true
+	neighbors[body] = true
 	pass
 
 
 func _on_body_exited(body):
-	if body == target:
-		in_range = false
+	neighbors.erase(body)
 	pass
 
-func _on_timeout():
-	if target != null:
-		if in_range:
-			target.health -= damage
-		if target.health <= 0:
-			target = null
-			agent.target_position = global_position
-	attacking = false
+
+func _on_target_death():
+	agent.target_position = global_position
 "
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wy7dn"]
 radius = 128.0
 
-[node name="Unit" type="CharacterBody2D" groups=["selectable"]]
+[sub_resource type="GDScript" id="GDScript_evg8a"]
+resource_name = "move"
+script/source = "extends Node
+
+
+@export var agent: NavigationAgent2D
+var target_position: Vector2
+
+
+func setup(target):
+	target_position = target
+
+
+func act() -> bool:
+	agent.target_position = target_position
+	if agent.is_target_reached():
+		return false
+	return true
+"
+
+[node name="Unit" type="CharacterBody2D" node_paths=PackedStringArray("move", "attack") groups=["selectable"]]
+collision_layer = 2
+collision_mask = 30
 motion_mode = 1
+wall_min_slide_angle = 0.0
 script = SubResource("GDScript_nbd7x")
+move = NodePath("Move")
+attack = NodePath("Attack")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_decmx")
@@ -129,13 +188,18 @@ radius = 64.0
 debug_enabled = true
 
 [node name="Attack" type="Area2D" parent="." node_paths=PackedStringArray("agent")]
+collision_layer = 2
+collision_mask = 12
 script = SubResource("GDScript_ogvfa")
 agent = NodePath("../NavigationAgent2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Attack"]
 shape = SubResource("CircleShape2D_wy7dn")
 
-[connection signal="target_command" from="." to="Attack" method="_on_unit_target_command"]
+[node name="Move" type="Node" parent="." node_paths=PackedStringArray("agent")]
+script = SubResource("GDScript_evg8a")
+agent = NodePath("../NavigationAgent2D")
+
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="body_entered" from="Attack" to="Attack" method="_on_body_entered"]
 [connection signal="body_exited" from="Attack" to="Attack" method="_on_body_exited"]
