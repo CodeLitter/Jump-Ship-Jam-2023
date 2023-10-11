@@ -7,11 +7,13 @@ resource_name = "spawner"
 script/source = "extends Node2D
 
 
+@export var health: int = 100
 @export var spawning_delay: int = 3
 @export var target_unit: PackedScene
 @onready var game_timer: Timer = $\"/root/GameTimer\"
 @onready var spawn_point: Node2D = $\"spawn_point\"
 var current_tick: int = 0
+signal death
 
 
 func _ready():
@@ -20,6 +22,9 @@ func _ready():
 
 
 func _process(delta):
+	if health <= 0:
+		death.emit()
+		queue_free()
 	pass
 
 
