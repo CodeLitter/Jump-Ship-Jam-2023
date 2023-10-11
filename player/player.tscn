@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://d045o1jm5u8ap"]
+[gd_scene load_steps=15 format=3 uid="uid://d045o1jm5u8ap"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_44l8l"]
 [ext_resource type="Script" path="res://player/pan.gd" id="1_n2faq"]
@@ -8,6 +8,7 @@
 [ext_resource type="ButtonGroup" uid="uid://bjusrajx8nfig" path="res://player/action_button_group.tres" id="5_biit0"]
 [ext_resource type="Script" path="res://player/place.gd" id="6_siop0"]
 [ext_resource type="PackedScene" uid="uid://cwv1kvtm4akao" path="res://structure/spawner_blueprint.tscn" id="8_ljmf5"]
+[ext_resource type="PackedScene" uid="uid://bwenhjjj8wpbh" path="res://ui/hightlight_box.tscn" id="9_r4qas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rnpqo"]
 size = Vector2(256, 256)
@@ -39,6 +40,49 @@ func _on_pressed():
 	player.state = player.State.BUILD
 	place.target_structure = structure
 	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_dyd0c"]
+resource_name = "highlight_unit"
+script/source = "extends Control
+
+
+@export var command: Command
+@export var box_prefab: PackedScene
+@onready var highlight_box: Panel = box_prefab.instantiate()
+
+
+func _process(delta):
+	while len(command.units) > get_child_count(true):
+		add_child(highlight_box.duplicate(), false, Node.INTERNAL_MODE_BACK)
+	for child in get_children(true):
+		child.visible = false
+	for i in len(command.units):
+		var unit = command.units[i]
+		var unit_collision: CollisionShape2D = unit.get_node(\"CollisionShape2D\")
+		var box = get_child(i, true)
+		var unit_rect := unit_collision.shape.get_rect()
+		box.global_position = unit.global_position - (unit_rect.size + highlight_box.size) / 2.0
+		box.size = unit_rect.size + highlight_box.size
+		box.visible = true
+		box.queue_redraw()
+"
+
+[sub_resource type="GDScript" id="GDScript_08lp6"]
+resource_name = "selection_box"
+script/source = "extends Panel
+
+
+@export var select: Select
+
+
+func _process(delta):
+	visible = select.dragging
+	global_position = Vector2(
+		min(select.drag_start_position.x, select.drag_end_position.x),
+		min(select.drag_start_position.y, select.drag_end_position.y)
+	)
+	size = abs(select.drag_end_position - select.drag_start_position)
 "
 
 [node name="Player" type="Camera2D"]
@@ -113,6 +157,21 @@ script = SubResource("GDScript_c0evq")
 player = NodePath("../../..")
 place = NodePath("../../../Place")
 structure = ExtResource("8_ljmf5")
+
+[node name="Highlight Unit UI" type="Control" parent="." node_paths=PackedStringArray("command")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_dyd0c")
+command = NodePath("../Command")
+box_prefab = ExtResource("9_r4qas")
+
+[node name="Selection Box UI" type="Panel" parent="." node_paths=PackedStringArray("select")]
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_08lp6")
+select = NodePath("../Select")
 
 [connection signal="body_entered" from="Command" to="Command" method="_on_body_entered"]
 [connection signal="body_entered" from="Select" to="Select" method="_on_body_entered"]

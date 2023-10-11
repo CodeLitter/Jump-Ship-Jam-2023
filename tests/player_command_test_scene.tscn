@@ -1,9 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://c041qau3u10k"]
+[gd_scene load_steps=7 format=3 uid="uid://c041qau3u10k"]
 
 [ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="1_f3qno"]
 [ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="2_qsmpp"]
-[ext_resource type="PackedScene" uid="uid://cka4jn0u8yksc" path="res://ui/highlight_unit_ui.tscn" id="3_40k5d"]
-[ext_resource type="PackedScene" uid="uid://nrl52svkam0q" path="res://ui/selection_box_ui.tscn" id="4_cvisd"]
 
 [sub_resource type="Gradient" id="Gradient_wwfrb"]
 
@@ -59,9 +57,3 @@ speed = 5000.0
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 position = Vector2(-21, -45)
 navigation_polygon = SubResource("NavigationPolygon_6t7jy")
-
-[node name="Highlight Unit UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_40k5d")]
-player = NodePath("../Player")
-
-[node name="Selection Box UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_cvisd")]
-player = NodePath("../Player")

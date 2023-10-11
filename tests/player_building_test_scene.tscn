@@ -1,10 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://dumcqah3q0jiq"]
+[gd_scene load_steps=8 format=3 uid="uid://dumcqah3q0jiq"]
 
 [ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="1_64oip"]
 [ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="2_0rf5j"]
-[ext_resource type="PackedScene" uid="uid://cka4jn0u8yksc" path="res://ui/highlight_unit_ui.tscn" id="3_vadnw"]
 [ext_resource type="PackedScene" uid="uid://cwv1kvtm4akao" path="res://structure/spawner_blueprint.tscn" id="3_w03yw"]
-[ext_resource type="PackedScene" uid="uid://nrl52svkam0q" path="res://ui/selection_box_ui.tscn" id="4_1nmhl"]
 
 [sub_resource type="Gradient" id="Gradient_wwfrb"]
 
@@ -74,11 +72,5 @@ position = Vector2(2385, 1431)
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 position = Vector2(-21, -45)
 navigation_polygon = SubResource("NavigationPolygon_6t7jy")
-
-[node name="Highlight Unit UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_vadnw")]
-player = NodePath("../Player")
-
-[node name="Selection Box UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_1nmhl")]
-player = NodePath("../Player")
 
 [editable path="Units/Unit6"]
