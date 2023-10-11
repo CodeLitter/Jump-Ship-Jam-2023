@@ -61,7 +61,7 @@ max = 5.0
 steps = 20
 
 [node name="Command" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["command"]]
-collision_mask = 12
+collision_mask = 30
 script = ExtResource("3_igh1q")
 camera = NodePath("..")
 

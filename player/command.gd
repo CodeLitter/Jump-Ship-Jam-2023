@@ -19,7 +19,9 @@ func _input(event):
 				target = null
 			if event.is_released():
 				for unit in units:
-					if target != null and target not in units:
+					if (target != null 
+						and target not in units
+						and (unit.collision_mask & target.collision_layer) != 0):
 						unit.act(target)
 					else:
 						unit.act(camera.get_global_mouse_position())
