@@ -31,6 +31,8 @@ func _process(delta):
 
 
 func _on_select_drag_start():
+	for unit in units:
+		unit.death.disconnect(_on_select_unit_remove.bind(unit))
 	units.clear()
 	pass
 
@@ -42,11 +44,12 @@ func _on_select_drag_end():
 func _on_select_unit_add(unit):
 	if unit not in units:
 		units.push_back(unit)
-		unit.death.connect(func(): units.erase(unit))
+		unit.death.connect(_on_select_unit_remove.bind(unit))
 	pass
 
 
 func _on_select_unit_remove(unit):
+	unit.death.disconnect(_on_select_unit_remove.bind(unit))
 	units.erase(unit)
 	pass
 
