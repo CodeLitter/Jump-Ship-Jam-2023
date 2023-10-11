@@ -1,15 +1,52 @@
-[gd_scene load_steps=5 format=3 uid="uid://d045o1jm5u8ap"]
+[gd_scene load_steps=12 format=3 uid="uid://d045o1jm5u8ap"]
 
+[ext_resource type="Script" path="res://player/player.gd" id="1_44l8l"]
 [ext_resource type="Script" path="res://player/pan.gd" id="1_n2faq"]
 [ext_resource type="Script" path="res://player/zoom.gd" id="2_rxoem"]
 [ext_resource type="Script" path="res://player/select.gd" id="3_3vjeb"]
 [ext_resource type="Script" path="res://player/command.gd" id="3_igh1q"]
+[ext_resource type="ButtonGroup" uid="uid://bjusrajx8nfig" path="res://player/action_button_group.tres" id="5_biit0"]
+[ext_resource type="Script" path="res://player/place.gd" id="6_siop0"]
+[ext_resource type="PackedScene" uid="uid://cwv1kvtm4akao" path="res://structure/spawner_blueprint.tscn" id="8_ljmf5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rnpqo"]
+size = Vector2(256, 256)
+
+[sub_resource type="GDScript" id="GDScript_hruam"]
+resource_name = "button_command"
+script/source = "extends Button
+
+
+@export var player: Player
+
+
+func _on_pressed():
+	player.state = player.State.COMMAND
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_c0evq"]
+resource_name = "button_spawner"
+script/source = "extends Button
+
+
+@export var player: Player
+@export var place: Place
+@export var structure: PackedScene
+
+
+func _on_pressed():
+	player.state = player.State.BUILD
+	place.target_structure = structure
+	pass
+"
 
 [node name="Player" type="Camera2D"]
 limit_left = 0
 limit_top = 0
 limit_right = 5000
 limit_bottom = 5000
+script = ExtResource("1_44l8l")
 
 [node name="Pan" type="Node" parent="." node_paths=PackedStringArray("camera")]
 script = ExtResource("1_n2faq")
@@ -23,19 +60,59 @@ min = 0.5
 max = 5.0
 steps = 20
 
-[node name="Command" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
+[node name="Command" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["command"]]
 collision_mask = 12
 script = ExtResource("3_igh1q")
 camera = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Command"]
 
-[node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera")]
+[node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["command"]]
 collision_mask = 26
 script = ExtResource("3_3vjeb")
 camera = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Select"]
+
+[node name="Place" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["build"]]
+collision_mask = 30
+script = ExtResource("6_siop0")
+camera = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Place"]
+shape = SubResource("RectangleShape2D_rnpqo")
+
+[node name="Canvas" type="CanvasLayer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Canvas"]
+anchors_preset = -1
+anchor_top = 0.875
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="ButtonCommand" type="Button" parent="Canvas/HBoxContainer" node_paths=PackedStringArray("player")]
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("5_biit0")
+text = "Command"
+script = SubResource("GDScript_hruam")
+player = NodePath("../../..")
+
+[node name="ButtonSpawner" type="Button" parent="Canvas/HBoxContainer" node_paths=PackedStringArray("player", "place")]
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_group = ExtResource("5_biit0")
+text = "Spawner"
+script = SubResource("GDScript_c0evq")
+player = NodePath("../../..")
+place = NodePath("../../../Place")
+structure = ExtResource("8_ljmf5")
 
 [connection signal="body_entered" from="Command" to="Command" method="_on_body_entered"]
 [connection signal="body_entered" from="Select" to="Select" method="_on_body_entered"]
@@ -44,3 +121,7 @@ camera = NodePath("..")
 [connection signal="drag_start" from="Select" to="Command" method="_on_select_drag_start"]
 [connection signal="unit_add" from="Select" to="Command" method="_on_select_unit_add"]
 [connection signal="unit_remove" from="Select" to="Command" method="_on_select_unit_remove"]
+[connection signal="body_entered" from="Place" to="Place" method="_on_body_entered"]
+[connection signal="body_exited" from="Place" to="Place" method="_on_body_exited"]
+[connection signal="pressed" from="Canvas/HBoxContainer/ButtonCommand" to="Canvas/HBoxContainer/ButtonCommand" method="_on_pressed"]
+[connection signal="pressed" from="Canvas/HBoxContainer/ButtonSpawner" to="Canvas/HBoxContainer/ButtonSpawner" method="_on_pressed"]

@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://c82vs56bxujao"]
+
+[ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="1_6flls"]
+[ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="2_qk641"]
+[ext_resource type="PackedScene" uid="uid://cka4jn0u8yksc" path="res://ui/highlight_unit_ui.tscn" id="5_3yyts"]
+[ext_resource type="PackedScene" uid="uid://nrl52svkam0q" path="res://ui/selection_box_ui.tscn" id="6_icvk3"]
+
+[sub_resource type="Gradient" id="Gradient_wwfrb"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_teqay"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6e7nm"]
+width = 500
+height = 500
+color_ramp = SubResource("Gradient_wwfrb")
+noise = SubResource("FastNoiseLite_teqay")
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_6t7jy"]
+vertices = PackedVector2Array(5021, 5045, 21, 5045, 21, 45, 5021, 45)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(5021, 45, 21, 45, 21, 5045, 5021, 5045)])
+
+[node name="player_select_test_scene" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(2500, 2500)
+scale = Vector2(10, 10)
+texture = SubResource("NoiseTexture2D_6e7nm")
+
+[node name="Player" parent="." instance=ExtResource("1_6flls")]
+
+[node name="Units" type="Node" parent="."]
+
+[node name="Unit" parent="Units" instance=ExtResource("2_qk641")]
+position = Vector2(500, 300)
+speed = 5000.0
+
+[node name="Unit2" parent="Units" instance=ExtResource("2_qk641")]
+position = Vector2(1099, 501)
+speed = 5000.0
+
+[node name="Unit3" parent="Units" instance=ExtResource("2_qk641")]
+position = Vector2(596, 788)
+speed = 5000.0
+
+[node name="Unit4" parent="Units" instance=ExtResource("2_qk641")]
+position = Vector2(1297, 990)
+speed = 5000.0
+
+[node name="Unit5" parent="Units" instance=ExtResource("2_qk641")]
+position = Vector2(1813, 375)
+speed = 5000.0
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+position = Vector2(-21, -45)
+navigation_polygon = SubResource("NavigationPolygon_6t7jy")
+
+[node name="Highlight Unit UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("5_3yyts")]
+player = NodePath("../Player")
+
+[node name="Selection Box UI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_icvk3")]
+player = NodePath("../Player")
