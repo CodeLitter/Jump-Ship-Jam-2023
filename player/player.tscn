@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://d045o1jm5u8ap"]
+[gd_scene load_steps=17 format=3 uid="uid://d045o1jm5u8ap"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_44l8l"]
 [ext_resource type="Script" path="res://player/pan.gd" id="1_n2faq"]
@@ -41,6 +41,20 @@ func _on_pressed():
 	player.state = player.State.BUILD
 	place.target_structure = structure
 	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_yfpiq"]
+resource_name = "highlight_build_box"
+script/source = "extends Panel
+
+
+@export var player: Player
+@export var place: Place
+
+
+func _process(delta):
+	position = player.get_local_mouse_position() - size / 2.0
+	visible = (player.state == Player.State.BUILD)
 "
 
 [sub_resource type="GDScript" id="GDScript_dyd0c"]
@@ -160,18 +174,26 @@ player = NodePath("../../..")
 place = NodePath("../../../Place")
 structure = ExtResource("9_mx7dr")
 
+[node name="Highlight Build Box" type="Panel" parent="." node_paths=PackedStringArray("player", "place")]
+offset_right = 256.0
+offset_bottom = 256.0
+mouse_filter = 2
+script = SubResource("GDScript_yfpiq")
+player = NodePath("..")
+place = NodePath("../Place")
+
 [node name="Highlight Unit UI" type="Control" parent="." node_paths=PackedStringArray("command")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 script = SubResource("GDScript_dyd0c")
 command = NodePath("../Command")
 box_prefab = ExtResource("9_r4qas")
 
 [node name="Selection Box UI" type="Panel" parent="." node_paths=PackedStringArray("select")]
-offset_right = 40.0
-offset_bottom = 40.0
+mouse_filter = 2
 script = SubResource("GDScript_08lp6")
 select = NodePath("../Select")
 
