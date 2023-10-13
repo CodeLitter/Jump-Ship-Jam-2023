@@ -1,9 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cwv1kvtm4akao"]
-
-[ext_resource type="PackedScene" uid="uid://cy4btr0b54c4g" path="res://structure/spawner.tscn" id="1_5igr2"]
+[gd_scene load_steps=5 format=3 uid="uid://cwv1kvtm4akao"]
 
 [sub_resource type="GDScript" id="GDScript_x00tr"]
-resource_name = "structure"
+resource_name = "blueprint"
 script/source = "extends Node2D
 
 
@@ -39,11 +37,10 @@ width = 256
 height = 256
 fill_to = Vector2(1, 1)
 
-[node name="structure" type="StaticBody2D"]
+[node name="blueprint" type="StaticBody2D"]
 collision_layer = 8
 collision_mask = 0
 script = SubResource("GDScript_x00tr")
-target_building = ExtResource("1_5igr2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_cvk8o")

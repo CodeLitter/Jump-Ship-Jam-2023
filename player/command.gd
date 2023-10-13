@@ -18,13 +18,13 @@ func _input(event):
 				collision.global_position = camera.get_global_mouse_position()
 				target = null
 			if event.is_released():
+				var unit_target = camera.get_global_mouse_position()
 				for unit in units:
-					if (target != null 
-						and target not in units
-						and (unit.collision_mask & target.collision_layer) != 0):
-						unit.act(target)
-					else:
-						unit.act(camera.get_global_mouse_position())
+					if target != null and target not in units:
+						var attack_node := unit.get_node("Attack") as Area2D
+						if attack_node != null and (attack_node.collision_mask & target.collision_layer) != 0:
+							unit_target = target
+					unit.act(unit_target)
 			pass
 
 

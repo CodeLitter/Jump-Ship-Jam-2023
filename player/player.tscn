@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d045o1jm5u8ap"]
+[gd_scene load_steps=16 format=3 uid="uid://d045o1jm5u8ap"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_44l8l"]
 [ext_resource type="Script" path="res://player/pan.gd" id="1_n2faq"]
@@ -7,7 +7,8 @@
 [ext_resource type="Script" path="res://player/command.gd" id="3_igh1q"]
 [ext_resource type="ButtonGroup" uid="uid://bjusrajx8nfig" path="res://player/action_button_group.tres" id="5_biit0"]
 [ext_resource type="Script" path="res://player/place.gd" id="6_siop0"]
-[ext_resource type="PackedScene" uid="uid://cwv1kvtm4akao" path="res://structure/spawner_blueprint.tscn" id="8_ljmf5"]
+[ext_resource type="PackedScene" uid="uid://cwv1kvtm4akao" path="res://structure/blueprint.tscn" id="8_i6o85"]
+[ext_resource type="PackedScene" uid="uid://cy4btr0b54c4g" path="res://structure/spawner.tscn" id="9_mx7dr"]
 [ext_resource type="PackedScene" uid="uid://bwenhjjj8wpbh" path="res://ui/hightlight_box.tscn" id="9_r4qas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rnpqo"]
@@ -122,6 +123,7 @@ camera = NodePath("..")
 collision_mask = 30
 script = ExtResource("6_siop0")
 camera = NodePath("..")
+blueprint = ExtResource("8_i6o85")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Place"]
 shape = SubResource("RectangleShape2D_rnpqo")
@@ -156,7 +158,7 @@ text = "Spawner"
 script = SubResource("GDScript_c0evq")
 player = NodePath("../../..")
 place = NodePath("../../../Place")
-structure = ExtResource("8_ljmf5")
+structure = ExtResource("9_mx7dr")
 
 [node name="Highlight Unit UI" type="Control" parent="." node_paths=PackedStringArray("command")]
 layout_mode = 3
