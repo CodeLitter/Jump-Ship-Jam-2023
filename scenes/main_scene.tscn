@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://x4f47cgyjvay"]
+
+[ext_resource type="PackedScene" uid="uid://d045o1jm5u8ap" path="res://player/player.tscn" id="1_ppl1o"]
+[ext_resource type="PackedScene" uid="uid://ii1qvsnw5eqk" path="res://structure/base.tscn" id="2_qvhrc"]
+[ext_resource type="PackedScene" uid="uid://caw2hy8hmf0ha" path="res://unit/unit.tscn" id="3_j7tl6"]
+
+[sub_resource type="Gradient" id="Gradient_wwfrb"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_teqay"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6e7nm"]
+width = 500
+height = 500
+color_ramp = SubResource("Gradient_wwfrb")
+noise = SubResource("FastNoiseLite_teqay")
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_6t7jy"]
+vertices = PackedVector2Array(5021, 5045, 21, 5045, 21, 45, 5021, 45)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(5021, 45, 21, 45, 21, 5045, 5021, 5045)])
+
+[node name="player_select_test_scene" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(2500, 2500)
+scale = Vector2(10, 10)
+texture = SubResource("NoiseTexture2D_6e7nm")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+position = Vector2(-21, -45)
+navigation_polygon = SubResource("NavigationPolygon_6t7jy")
+
+[node name="Player" parent="." instance=ExtResource("1_ppl1o")]
+position = Vector2(2500, 2500)
+
+[node name="Units" type="Node" parent="."]
+
+[node name="Unit" parent="Units" groups=["player"] instance=ExtResource("3_j7tl6")]
+position = Vector2(2782, 2430)
+
+[node name="Unit2" parent="Units" groups=["player"] instance=ExtResource("3_j7tl6")]
+position = Vector2(2279, 2470)
+
+[node name="Unit3" parent="Units" groups=["player"] instance=ExtResource("3_j7tl6")]
+position = Vector2(2510, 2269)
+
+[node name="Structures" type="Node" parent="."]
+
+[node name="base" parent="Structures" groups=["player"] instance=ExtResource("2_qvhrc")]
+position = Vector2(2500, 2500)

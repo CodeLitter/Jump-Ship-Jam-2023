@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://ii1qvsnw5eqk"]
+
+[sub_resource type="GDScript" id="GDScript_1t6yw"]
+resource_name = "base"
+script/source = "extends Node2D
+
+
+@export var health: int = 100
+signal death
+
+
+func _process(delta):
+	if health <= 0:
+		death.emit()
+		queue_free()
+	pass
+"
+
+[sub_resource type="Gradient" id="Gradient_xpuht"]
+colors = PackedColorArray(0, 0, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_74r8c"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_yxx0m"]
+width = 256
+height = 256
+color_ramp = SubResource("Gradient_xpuht")
+noise = SubResource("FastNoiseLite_74r8c")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6soj0"]
+size = Vector2(256, 256)
+
+[node name="base" type="StaticBody2D"]
+collision_layer = 16
+collision_mask = 0
+script = SubResource("GDScript_1t6yw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("NoiseTexture2D_yxx0m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6soj0")

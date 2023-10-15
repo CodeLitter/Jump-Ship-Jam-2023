@@ -10,6 +10,7 @@ script/source = "extends Node2D
 @export var health: int = 100
 @export var spawning_delay: int = 3
 @export var target_unit: PackedScene
+@export var pool: Node
 @onready var game_timer: Timer = $\"/root/GameTimer\"
 @onready var spawn_point: Node2D = $\"spawn_point\"
 var current_tick: int = 0
@@ -34,7 +35,14 @@ func _on_timeout():
 		current_tick = 0
 		var spawned_unit := target_unit.instantiate() as Node2D
 		spawned_unit.global_position = spawn_point.global_position
-		get_tree().root.add_child(spawned_unit)
+		if is_in_group(\"player\"):
+			spawned_unit.add_to_group(\"player\")
+		if is_in_group(\"enemy\"):
+			spawned_unit.add_to_group(\"enemy\")
+		if pool:
+			pool.add_child(spawned_unit)
+		else:
+			get_tree().current_scene.add_child(spawned_unit)
 	pass
 "
 
@@ -52,7 +60,7 @@ fill_to = Vector2(0, 0)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6soj0"]
 size = Vector2(256, 256)
 
-[node name="spawner" type="StaticBody2D"]
+[node name="spawner" type="StaticBody2D" groups=["spawner"]]
 collision_layer = 16
 collision_mask = 0
 script = SubResource("GDScript_1t6yw")

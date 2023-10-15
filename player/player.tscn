@@ -43,20 +43,6 @@ func _on_pressed():
 	pass
 "
 
-[sub_resource type="GDScript" id="GDScript_yfpiq"]
-resource_name = "highlight_build_box"
-script/source = "extends Panel
-
-
-@export var player: Player
-@export var place: Place
-
-
-func _process(delta):
-	position = player.get_local_mouse_position() - size / 2.0
-	visible = (player.state == Player.State.BUILD)
-"
-
 [sub_resource type="GDScript" id="GDScript_dyd0c"]
 resource_name = "highlight_unit"
 script/source = "extends Control
@@ -98,6 +84,21 @@ func _process(delta):
 		min(select.drag_start_position.y, select.drag_end_position.y)
 	)
 	size = abs(select.drag_end_position - select.drag_start_position)
+"
+
+[sub_resource type="GDScript" id="GDScript_cq3wh"]
+resource_name = "build_box"
+script/source = "extends Control
+
+
+@export var player: Player
+@export var place: Place
+
+
+func _process(delta):
+	rotation = place.collision.rotation
+	position = player.get_local_mouse_position()
+	visible = (player.state == Player.State.BUILD)
 "
 
 [node name="Player" type="Camera2D"]
@@ -174,15 +175,7 @@ player = NodePath("../../..")
 place = NodePath("../../../Place")
 structure = ExtResource("9_mx7dr")
 
-[node name="Highlight Build Box" type="Panel" parent="." node_paths=PackedStringArray("player", "place")]
-offset_right = 256.0
-offset_bottom = 256.0
-mouse_filter = 2
-script = SubResource("GDScript_yfpiq")
-player = NodePath("..")
-place = NodePath("../Place")
-
-[node name="Highlight Unit UI" type="Control" parent="." node_paths=PackedStringArray("command")]
+[node name="HighlightUnitUI" type="Control" parent="." node_paths=PackedStringArray("command")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -192,10 +185,30 @@ script = SubResource("GDScript_dyd0c")
 command = NodePath("../Command")
 box_prefab = ExtResource("9_r4qas")
 
-[node name="Selection Box UI" type="Panel" parent="." node_paths=PackedStringArray("select")]
+[node name="SelectionBoxUI" type="Panel" parent="." node_paths=PackedStringArray("select")]
 mouse_filter = 2
 script = SubResource("GDScript_08lp6")
 select = NodePath("../Select")
+
+[node name="BuildBox" type="Control" parent="." node_paths=PackedStringArray("player", "place")]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_cq3wh")
+player = NodePath("..")
+place = NodePath("../Place")
+
+[node name="Highlight" type="Panel" parent="BuildBox"]
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="BuildBox/Highlight"]
+layout_mode = 0
+offset_left = 120.0
+offset_right = 136.0
+offset_bottom = 16.0
 
 [connection signal="body_entered" from="Command" to="Command" method="_on_body_entered"]
 [connection signal="body_entered" from="Select" to="Select" method="_on_body_entered"]
