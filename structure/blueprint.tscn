@@ -7,7 +7,6 @@ script/source = "extends Node2D
 
 @export var health: int = 100
 @export var target_building: PackedScene
-@export var pool: Node
 signal death
 
 func _ready():
@@ -19,14 +18,11 @@ func _process(delta):
 		var current_building := target_building.instantiate() as Node2D
 		current_building.global_position = global_position
 		current_building.global_rotation = rotation
-		if pool:
-			pool.add_child(current_building)
-		else:
-			get_tree().current_scene.add_child(current_building)
 		if is_in_group(\"player\"):
 			current_building.add_to_group(\"player\")
 		if is_in_group(\"enemy\"):
 			current_building.add_to_group(\"enemy\")
+		get_tree().current_scene.add_child(current_building)
 		death.emit()
 		queue_free()
 	pass
@@ -47,7 +43,7 @@ height = 256
 fill_to = Vector2(1, 1)
 
 [node name="blueprint" type="StaticBody2D" groups=["blueprint"]]
-collision_layer = 8
+collision_layer = 4
 collision_mask = 0
 script = SubResource("GDScript_x00tr")
 
@@ -56,3 +52,6 @@ shape = SubResource("RectangleShape2D_cvk8o")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_t6hpe")
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+radius = 196.0

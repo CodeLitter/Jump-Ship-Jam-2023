@@ -32,18 +32,18 @@ texture = SubResource("NoiseTexture2D_6e7nm")
 
 [node name="Units" type="Node" parent="."]
 
-[node name="Unit" parent="Units" instance=ExtResource("2_uwgip")]
+[node name="Unit" parent="Units" groups=["player"] instance=ExtResource("2_uwgip")]
 position = Vector2(2006, 453)
 
-[node name="Unit2" parent="Units" instance=ExtResource("2_uwgip")]
+[node name="Unit2" parent="Units" groups=["player"] instance=ExtResource("2_uwgip")]
 position = Vector2(1369, 933)
 
-[node name="Unit3" parent="Units" instance=ExtResource("2_uwgip")]
+[node name="Unit3" parent="Units" groups=["player"] instance=ExtResource("2_uwgip")]
 position = Vector2(1162, 1620)
 
 [node name="Structures" type="Node" parent="."]
 
-[node name="structure" parent="Structures" instance=ExtResource("3_w03yw")]
+[node name="SpawnerBlueprint" parent="Structures" groups=["player"] instance=ExtResource("3_w03yw")]
 position = Vector2(2385, 1431)
 target_building = ExtResource("4_qfd8j")
 

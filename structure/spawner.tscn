@@ -10,7 +10,6 @@ script/source = "extends Node2D
 @export var health: int = 100
 @export var spawning_delay: int = 3
 @export var target_unit: PackedScene
-@export var pool: Node
 @onready var game_timer: Timer = $\"/root/GameTimer\"
 @onready var spawn_point: Node2D = $\"spawn_point\"
 var current_tick: int = 0
@@ -39,10 +38,7 @@ func _on_timeout():
 			spawned_unit.add_to_group(\"player\")
 		if is_in_group(\"enemy\"):
 			spawned_unit.add_to_group(\"enemy\")
-		if pool:
-			pool.add_child(spawned_unit)
-		else:
-			get_tree().current_scene.add_child(spawned_unit)
+		get_tree().current_scene.add_child(spawned_unit)
 	pass
 "
 
@@ -61,7 +57,7 @@ fill_to = Vector2(0, 0)
 size = Vector2(256, 256)
 
 [node name="spawner" type="StaticBody2D" groups=["spawner"]]
-collision_layer = 16
+collision_layer = 8
 collision_mask = 0
 script = SubResource("GDScript_1t6yw")
 target_unit = ExtResource("1_mageu")
@@ -74,3 +70,6 @@ texture = SubResource("GradientTexture2D_enp8r")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_6soj0")
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+radius = 196.0

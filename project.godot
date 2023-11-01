@@ -63,10 +63,9 @@ rotate={
 [layer_names]
 
 2d_physics/layer_1="player"
-2d_physics/layer_2="friendly_units"
-2d_physics/layer_3="enemies_units"
-2d_physics/layer_4="blueprints"
-2d_physics/layer_5="structures"
+2d_physics/layer_2="units"
+2d_physics/layer_3="blueprints"
+2d_physics/layer_4="structures"
 
 [physics]
 

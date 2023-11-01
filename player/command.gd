@@ -21,7 +21,7 @@ func _input(event):
 				var unit_target = camera.get_global_mouse_position()
 				for unit in units:
 					if (target != null 
-						and target not in units 
+						and target not in units
 						and (target.is_in_group("blueprint") or target.is_in_group("enemy"))):
 						var attack_node := unit.get_node("Attack") as Area2D
 						if attack_node != null and (attack_node.collision_mask & target.collision_layer) != 0:

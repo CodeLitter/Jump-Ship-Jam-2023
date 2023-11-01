@@ -121,21 +121,21 @@ max = 5.0
 steps = 20
 
 [node name="Command" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["command"]]
-collision_mask = 30
+collision_mask = 14
 script = ExtResource("3_igh1q")
 camera = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Command"]
 
 [node name="Select" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["command"]]
-collision_mask = 26
+collision_mask = 2
 script = ExtResource("3_3vjeb")
 camera = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Select"]
 
 [node name="Place" type="Area2D" parent="." node_paths=PackedStringArray("camera") groups=["build"]]
-collision_mask = 30
+collision_mask = 14
 script = ExtResource("6_siop0")
 camera = NodePath("..")
 blueprint = ExtResource("8_i6o85")
@@ -198,6 +198,7 @@ player = NodePath("..")
 place = NodePath("../Place")
 
 [node name="Highlight" type="Panel" parent="BuildBox"]
+layout_mode = 0
 offset_left = -128.0
 offset_top = -128.0
 offset_right = 128.0
